@@ -36,3 +36,14 @@
     transform: rotate(360deg);
   }
 }
+
+#Clock-style {
+  padding: 20px;
+  border-style: solid;
+  box-shadow: #282c34;
+  border-radius: 10px;
+  text-align: center;
+  font-weight: 900;
+  background-color: rgb(39, 40, 130);
+  color: white;
+}

@@ -9,10 +9,18 @@ import DisplayDelete from './components/DisplayDelete';
 import Time from './components/Time';
 import Logout from "./components/Logout";
 import Alert from "./components/Alert";
+import Selector from "./components/Selector";
+import MyClock from "./components/MyClock";
+import SelectedCar from "./components/SelectorCar";
+import Timer from "./components/Timer";
 function App() {
   return (
       <>
           <Alert text="Cảnh báo! Tài nguyên bạn vừa truy cập không tồn tại." />
+          <SelectedCar/>
+          <Timer/>
+          <Selector/>
+          <MyClock/>
           <Logout/>
           <div className="App">
               <Welcome name="Admin" id="1"/>
