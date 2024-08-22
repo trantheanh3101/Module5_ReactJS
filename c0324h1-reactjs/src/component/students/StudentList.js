@@ -1,40 +1,65 @@
 import "bootstrap/dist/css/bootstrap.css";
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import AddStudent from './AddStudent';
 import EditStudent from './EditStudent';
+import * as StudentService from "../../service/StudentService";
 
 function StudentList() {
     const [students, setStudents] = useState([]);
     const [minPoints, setMinPoints] = useState(0);
     const [editingStudent, setEditingStudent] = useState(null);
     const [showAddModal, setShowAddModal] = useState(false);
+    const [searchName, setSearchName] = useState('');
 
     useEffect(() => {
-        const initialStudents = [
-            { id: 1, name: "Thế Anh", address: "Thanh Hoá", points: 9 },
-            { id: 2, name: "Thế Anh 1", address: "Thanh Hoá", points: 4 },
-            { id: 3, name: "Thế Anh 2", address: "Thanh Hoá", points: 2 },
-            { id: 4, name: "Thế Anh 3", address: "Thanh Hoá", points: 7 }
-        ];
-        setStudents(initialStudents);
+        const getAllStudents = async () => {
+            try {
+                const data = await StudentService.getStudents();
+                setStudents(data);
+            } catch (error) {
+                console.error('Error fetching students:', error);
+            }
+        };
+        getAllStudents();
     }, []);
 
-    const filteredStudents = students.filter(student => student.points >= minPoints);
+    // Lọc sinh viên dựa trên điểm và tên
+    const filteredStudents = students.filter(student =>
+        student.points >= minPoints &&
+        student.name.toLowerCase().includes(searchName.toLowerCase())
+    );
 
-    const handleSaveClick = (values) => {
-        setStudents(students.map(student =>
-            student.id === editingStudent.id ? { ...editingStudent, ...values } : student
-        ));
-        setEditingStudent(null); // Close the modal after saving
+    const handleSaveClick = async (values) => {
+        try {
+            const updatedStudent = await StudentService.saveStudent(editingStudent.id, values);
+            setStudents(students.map(student =>
+                student.id === editingStudent.id ? updatedStudent : student
+            ));
+            setEditingStudent(null); // Close the modal after saving
+        } catch (error) {
+            console.error('Error updating student:', error);
+        }
     };
 
-    const handleAddStudent = (values) => {
-        setStudents([...students, { ...values, id: students.length + 1 }]);
-        setShowAddModal(false); // Close the modal after adding
+    const handleAddStudent = async (values) => {
+        try {
+            const newId = students.length > 0 ? Math.max(...students.map(student => student.id)) + 1 : 1;
+            const newStudent = await StudentService.addStudent({ ...values, id: newId + ""});
+            setStudents([...students, newStudent]);
+            setShowAddModal(false); // Close the modal after adding
+        } catch (error) {
+            console.error('Error adding student:', error);
+        }
     };
 
-    const handleDeleteClick = (studentId) => {
-        setStudents(students.filter(student => student.id !== studentId));
+    const handleDeleteClick = async (studentId) => {
+        try {
+            await StudentService.deleteStudent(studentId);
+            setStudents(students.filter(student => student.id !== studentId));
+        } catch (error) {
+            console.error('Error deleting student:', error);
+        }
     };
 
     return (
@@ -51,6 +76,19 @@ function StudentList() {
                     onChange={(e) => setMinPoints(Number(e.target.value))}
                 />
             </div>
+
+            {/* Thêm Input để tìm kiếm theo tên */}
+            <div className="mb-3">
+                <label htmlFor="searchName" className="form-label">Search by name:</label>
+                <input
+                    type="text"
+                    id="searchName"
+                    className="form-control"
+                    value={searchName}
+                    onChange={(e) => setSearchName(e.target.value)}
+                />
+            </div>
+
             <button className="btn btn-success mb-3" onClick={() => setShowAddModal(true)}>
                 Add New Student
             </button>
@@ -83,7 +121,8 @@ function StudentList() {
                         <td>
                             <button className="btn btn-primary" onClick={() => setEditingStudent(item)}>Edit</button>
                             {' '}
-                            <button className="btn btn-danger" onClick={() => handleDeleteClick(item.id)}>Delete</button>
+                            <button className="btn btn-danger" onClick={() => handleDeleteClick(item.id)}>Delete
+                            </button>
                         </td>
                     </tr>
                 ))}

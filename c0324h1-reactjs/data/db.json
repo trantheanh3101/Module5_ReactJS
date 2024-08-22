@@ -1,0 +1,34 @@
+{
+  "students": [
+    {
+      "id": "2",
+      "name": "Thế Anh 36",
+      "address": "Thanh Hoá",
+      "points": 5
+    },
+    {
+      "id": "4",
+      "name": "trần ngọc đức",
+      "address": "Ninh Bình",
+      "points": 7
+    },
+    {
+      "id": "5",
+      "name": "TRẦN THẾ ANH",
+      "address": "Ninh Bình",
+      "points": 5
+    },
+    {
+      "id": "6",
+      "name": "trần thế anh",
+      "address": "Ninh Bình",
+      "points": 9
+    },
+    {
+      "id": "7",
+      "name": "trần ngọc đức",
+      "address": "Ninh Bình",
+      "points": 0
+    }
+  ]
+}
