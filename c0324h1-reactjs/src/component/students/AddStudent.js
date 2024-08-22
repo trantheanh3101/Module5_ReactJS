@@ -1,73 +1,79 @@
-import React, { useState } from "react";
+import React from 'react';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
+
+// Validation schema for the form
+const validationSchema = Yup.object({
+    name: Yup.string().required('Name is required'),
+    address: Yup.string().required('Address is required'),
+    points: Yup.number()
+        .min(0, 'Points must be at least 0')
+        .max(10, 'Points must be at most 10')
+        .required('Points are required')
+});
 
 function AddStudent({ show, onClose, onSave }) {
-    const [newStudent, setNewStudent] = useState({
-        id: null,
-        name: "",
-        address: "",
-        points: 0
-    });
+    if (!show) return null;
 
-    const handleSaveClick = () => {
-        if (newStudent.name && newStudent.address && newStudent.points >= 0 && newStudent.points <= 10) {
-            onSave(newStudent);
-            onClose();
-        } else {
-            alert("Please enter valid student details.");
-        }
-    };
-    if (!show) {
-        return null;
-    }
     return (
         <div className="modal fade show d-block" tabIndex="-1">
             <div className="modal-dialog">
                 <div className="modal-content">
                     <div className="modal-header">
                         <h5 className="modal-title">Add New Student</h5>
-                        <button
-                            type="button"
-                            className="btn-close"
-                            onClick={onClose}>
-                        </button>
+                        <button type="button" className="btn-close" onClick={onClose}></button>
                     </div>
                     <div className="modal-body">
-                        <div className="mb-3">
-                            <label htmlFor="name" className="form-label">Name:</label>
-                            <input
-                                type="text"
-                                id="name"
-                                className="form-control"
-                                value={newStudent.name}
-                                onChange={(e) => setNewStudent({ ...newStudent, name: e.target.value })}
-                            />
-                        </div>
-                        <div className="mb-3">
-                            <label htmlFor="address" className="form-label">Address:</label>
-                            <input
-                                type="text"
-                                id="address"
-                                className="form-control"
-                                value={newStudent.address}
-                                onChange={(e) => setNewStudent({ ...newStudent, address: e.target.value })}
-                            />
-                        </div>
-                        <div className="mb-3">
-                            <label htmlFor="points" className="form-label">Points:</label>
-                            <input
-                                type="number"
-                                id="points"
-                                className="form-control"
-                                min="0"
-                                max="10"
-                                value={newStudent.points}
-                                onChange={(e) => setNewStudent({ ...newStudent, points: Number(e.target.value) })}
-                            />
-                        </div>
-                    </div>
-                    <div className="modal-footer">
-                        <button type="button" className="btn btn-secondary" onClick={onClose}>Close</button>
-                        <button type="button" className="btn btn-primary" onClick={handleSaveClick}>Save</button>
+                        <Formik
+                            initialValues={{
+                                name: '',
+                                address: '',
+                                points: 0
+                            }}
+                            validationSchema={validationSchema}
+                            onSubmit={onSave}
+                        >
+                            {() => (
+                                <Form>
+                                    <div className="mb-3">
+                                        <label htmlFor="name" className="form-label">Name:</label>
+                                        <Field
+                                            type="text"
+                                            id="name"
+                                            name="name"
+                                            className="form-control"
+                                        />
+                                        <ErrorMessage name="name" component="div" className="text-danger" />
+                                    </div>
+                                    <div className="mb-3">
+                                        <label htmlFor="address" className="form-label">Address:</label>
+                                        <Field
+                                            type="text"
+                                            id="address"
+                                            name="address"
+                                            className="form-control"
+                                        />
+                                        <ErrorMessage name="address" component="div" className="text-danger" />
+                                    </div>
+                                    <div className="mb-3">
+                                        <label htmlFor="points" className="form-label">Points:</label>
+                                        <Field
+                                            type="number"
+                                            id="points"
+                                            name="points"
+                                            className="form-control"
+                                            min="0"
+                                            max="10"
+                                        />
+                                        <ErrorMessage name="points" component="div" className="text-danger" />
+                                    </div>
+                                    <div className="modal-footer">
+                                        <button type="button" className="btn btn-secondary" onClick={onClose}>Close</button>
+                                        <button type="submit" className="btn btn-primary">Save</button>
+                                    </div>
+                                </Form>
+                            )}
+                        </Formik>
                     </div>
                 </div>
             </div>

@@ -1,16 +1,14 @@
 import "bootstrap/dist/css/bootstrap.css";
 import React, { useState, useEffect } from 'react';
-import EditStudent from './EditStudent';  // Import modal đã tách riêng
-import AddStudent from './AddStudent';  // Import modal đã tách riêng
+import AddStudent from './AddStudent';
+import EditStudent from './EditStudent';
 
 function StudentList() {
     const [students, setStudents] = useState([]);
     const [minPoints, setMinPoints] = useState(0);
     const [editingStudent, setEditingStudent] = useState(null);
-    const [error, setError] = useState("");
     const [showAddModal, setShowAddModal] = useState(false);
 
-    // Khởi tạo danh sách sinh viên trong useEffect
     useEffect(() => {
         const initialStudents = [
             { id: 1, name: "Thế Anh", address: "Thanh Hoá", points: 9 },
@@ -21,39 +19,22 @@ function StudentList() {
         setStudents(initialStudents);
     }, []);
 
-    // Lọc danh sách học sinh theo điểm số tối thiểu
     const filteredStudents = students.filter(student => student.points >= minPoints);
 
-    // Hàm xử lý khi nhấn nút Edit
-    const handleEditClick = (student) => {
-        setEditingStudent(student);
-        setError("");
-    };
-
-    const handleAddStudent = (newStudent) => {
-        setStudents([...students, { ...newStudent, id: students.length + 1 }]);
-        // Cú pháp ...students là toán tử trải (spread operator),
-        // được sử dụng để tạo một bản sao của mảng students hiện tại.
-        // Nó lấy tất cả các phần tử trong mảng students và đặt chúng vào một mảng mới.
-    };
-
-    // Hàm xử lý khi lưu thay đổi
-    const handleSaveClick = () => {
-        if (editingStudent.points < 0 || editingStudent.points > 10) {
-            setError("Points must be between 0 and 10.");
-            return;
-        }
+    const handleSaveClick = (values) => {
         setStudents(students.map(student =>
-            student.id === editingStudent.id ? editingStudent : student
+            student.id === editingStudent.id ? { ...editingStudent, ...values } : student
         ));
-        setEditingStudent(null); // Đóng modal sau khi lưu
+        setEditingStudent(null); // Close the modal after saving
     };
 
-    // Hàm xử lý khi nhấn nút Delete
+    const handleAddStudent = (values) => {
+        setStudents([...students, { ...values, id: students.length + 1 }]);
+        setShowAddModal(false); // Close the modal after adding
+    };
+
     const handleDeleteClick = (studentId) => {
-        // Lọc ra danh sách sinh viên mới, bỏ qua sinh viên có id bằng studentId
-        const updatedStudents = students.filter(student => student.id !== studentId);
-        setStudents(updatedStudents);
+        setStudents(students.filter(student => student.id !== studentId));
     };
 
     return (
@@ -100,33 +81,30 @@ function StudentList() {
                                                 : "Kém"}
                         </td>
                         <td>
-                            <button className="btn btn-primary" onClick={() => handleEditClick(item)}>Edit</button>
+                            <button className="btn btn-primary" onClick={() => setEditingStudent(item)}>Edit</button>
                             {' '}
                             <button className="btn btn-danger" onClick={() => handleDeleteClick(item.id)}>Delete</button>
                         </td>
-
                     </tr>
                 ))}
                 </tbody>
             </table>
 
-            {/* Modal */}
+            {/* Modal for editing student */}
             {editingStudent && (
                 <EditStudent
-                    editingStudent={editingStudent}
-                    setEditingStudent={setEditingStudent}
-                    handleSaveClick={handleSaveClick}
+                    student={editingStudent}
+                    onSave={handleSaveClick}
+                    onClose={() => setEditingStudent(null)}
                 />
             )}
 
+            {/* Modal for adding new student */}
             <AddStudent
                 show={showAddModal}
-                onClose={() => setShowAddModal(false)}
                 onSave={handleAddStudent}
+                onClose={() => setShowAddModal(false)}
             />
-
-            {/* Hiển thị thông báo lỗi nếu có */}
-            {error && <div className="alert alert-danger mt-3">{error}</div>}
         </div>
     );
 }
