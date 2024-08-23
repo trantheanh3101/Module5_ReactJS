@@ -4,7 +4,7 @@
       "id": "2",
       "name": "Thế Anh 36",
       "address": "Thanh Hoá",
-      "points": 5
+      "points": 10
     },
     {
       "id": "4",
@@ -25,10 +25,28 @@
       "points": 9
     },
     {
-      "id": "7",
+      "name": "trần ngọc đức",
+      "address": "Mỹ Đình- Hà Nội",
+      "points": 6,
+      "id": "7"
+    },
+    {
       "name": "trần ngọc đức",
       "address": "Ninh Bình",
-      "points": 0
+      "points": 10,
+      "id": "8"
+    },
+    {
+      "name": "TRẦN THẾ ANH",
+      "address": "Ninh Bình",
+      "points": 10,
+      "id": "9"
+    },
+    {
+      "name": "trần ngọc đức",
+      "address": "Mỹ Đình- Hà Nội",
+      "points": 2,
+      "id": "10"
     }
   ]
 }

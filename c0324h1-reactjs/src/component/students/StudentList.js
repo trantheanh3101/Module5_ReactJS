@@ -8,27 +8,23 @@ import * as StudentService from "../../service/StudentService";
 function StudentList() {
     const [students, setStudents] = useState([]);
     const [minPoints, setMinPoints] = useState(0);
+    const [topPoints, setTopPoints] = useState("");
     const [editingStudent, setEditingStudent] = useState(null);
     const [showAddModal, setShowAddModal] = useState(false);
     const [searchName, setSearchName] = useState('');
+    const [showFilters, setShowFilters] = useState(false); // State to manage showing filters
 
     useEffect(() => {
-        const getAllStudents = async (searchName) => {
+        const getAllStudents = async (searchName, minPoints, topPoints) => {
             try {
-                const data = await StudentService.getStudents(searchName);
+                const data = await StudentService.getStudents(searchName, minPoints, topPoints);
                 setStudents(data);
             } catch (error) {
-                console.error('Error fetching students:', error);
+                window.alert('Error fetching students: ' + error.message);
             }
         };
-        getAllStudents(searchName);
-    }, [searchName]);
-
-    // Lọc sinh viên dựa trên điểm và tên
-    // const filteredStudents = students.filter(student =>
-    //     student.points >= minPoints &&
-    //     student.name.toLowerCase().includes(searchName.toLowerCase())
-    // );
+        getAllStudents(searchName, minPoints, topPoints);
+    }, [searchName, minPoints, topPoints]);
 
     const handleSaveClick = async (values) => {
         try {
@@ -38,18 +34,18 @@ function StudentList() {
             ));
             setEditingStudent(null); // Close the modal after saving
         } catch (error) {
-            console.error('Error updating student:', error);
+            window.alert('Error updating student: ' + error.message);
         }
     };
 
     const handleAddStudent = async (values) => {
         try {
             const newId = students.length > 0 ? Math.max(...students.map(student => student.id)) + 1 : 1;
-            const newStudent = await StudentService.addStudent({ ...values, id: newId + ""});
+            const newStudent = await StudentService.addStudent({ ...values, id: newId + "" });
             setStudents([...students, newStudent]);
             setShowAddModal(false); // Close the modal after adding
         } catch (error) {
-            console.error('Error adding student:', error);
+            window.alert('Error adding student: ' + error.message);
         }
     };
 
@@ -58,40 +54,58 @@ function StudentList() {
             await StudentService.deleteStudent(studentId);
             setStudents(students.filter(student => student.id !== studentId));
         } catch (error) {
-            console.error('Error deleting student:', error);
+            window.alert('Error deleting student: ' + error.message);
         }
     };
 
+    const toggleFilters = () => setShowFilters(!showFilters); // Toggle filter visibility
+
     return (
         <div className="container mt-5">
-            <div className="mb-3">
-                <label htmlFor="minPoints" className="form-label">Filter by minimum points:</label>
-                <input
-                    type="number"
-                    id="minPoints"
-                    className="form-control"
-                    min="0"
-                    max="10"
-                    value={minPoints}
-                    onChange={(e) => setMinPoints(Number(e.target.value))}
-                />
-            </div>
-
-            {/* Thêm Input để tìm kiếm theo tên */}
-            <div className="mb-3">
-                <label htmlFor="searchName" className="form-label">Search by name:</label>
-                <input
-                    type="text"
-                    id="searchName"
-                    className="form-control"
-                    value={searchName}
-                    onChange={(e) => setSearchName(e.target.value)}
-                />
-            </div>
-
             <button className="btn btn-success mb-3" onClick={() => setShowAddModal(true)}>
                 Add New Student
             </button>
+            <button className="btn btn-info mb-3" onClick={toggleFilters}>
+                {showFilters ? 'Hide Filters' : 'Show Filters'}
+            </button>
+            {showFilters && (
+                <>
+                    <div className="mb-3">
+                        <label htmlFor="minPoints" className="form-label">Filter by minimum points:</label>
+                        <input
+                            type="number"
+                            id="minPoints"
+                            className="form-control"
+                            min="0"
+                            max="10"
+                            placeholder="Enter points"
+                            onChange={(e) => setMinPoints(Number(e.target.value))}
+                        />
+                    </div>
+
+                    <div className="mb-3">
+                        <label htmlFor="topPoints" className="form-label">Filter by top students points:</label>
+                        <input
+                            type="text"
+                            id="topPoints"
+                            className="form-control"
+                            placeholder="Enter top points"
+                            onChange={(e) => setTopPoints(e.target.value)}
+                        />
+                    </div>
+
+                    <div className="mb-3">
+                        <label htmlFor="searchName" className="form-label">Search by name:</label>
+                        <input
+                            type="text"
+                            id="searchName"
+                            className="form-control"
+                            value={searchName}
+                            onChange={(e) => setSearchName(e.target.value)}
+                        />
+                    </div>
+                </>
+            )}
             <table className="table table-striped table-bordered">
                 <thead className="thead-dark">
                 <tr>
@@ -129,7 +143,6 @@ function StudentList() {
                 </tbody>
             </table>
 
-            {/* Modal for editing student */}
             {editingStudent && (
                 <EditStudent
                     student={editingStudent}
@@ -138,7 +151,6 @@ function StudentList() {
                 />
             )}
 
-            {/* Modal for adding new student */}
             <AddStudent
                 show={showAddModal}
                 onSave={handleAddStudent}
