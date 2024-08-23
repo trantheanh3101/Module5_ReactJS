@@ -13,22 +13,22 @@ function StudentList() {
     const [searchName, setSearchName] = useState('');
 
     useEffect(() => {
-        const getAllStudents = async () => {
+        const getAllStudents = async (searchName) => {
             try {
-                const data = await StudentService.getStudents();
+                const data = await StudentService.getStudents(searchName);
                 setStudents(data);
             } catch (error) {
                 console.error('Error fetching students:', error);
             }
         };
-        getAllStudents();
-    }, []);
+        getAllStudents(searchName);
+    }, [searchName]);
 
     // Lọc sinh viên dựa trên điểm và tên
-    const filteredStudents = students.filter(student =>
-        student.points >= minPoints &&
-        student.name.toLowerCase().includes(searchName.toLowerCase())
-    );
+    // const filteredStudents = students.filter(student =>
+    //     student.points >= minPoints &&
+    //     student.name.toLowerCase().includes(searchName.toLowerCase())
+    // );
 
     const handleSaveClick = async (values) => {
         try {
@@ -104,7 +104,7 @@ function StudentList() {
                 </tr>
                 </thead>
                 <tbody>
-                {filteredStudents.map((item, index) => (
+                {students.map((item, index) => (
                     <tr key={item.id}>
                         <td>{index + 1}</td>
                         <td>{item.name}</td>

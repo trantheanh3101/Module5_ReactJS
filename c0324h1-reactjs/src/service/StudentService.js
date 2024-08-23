@@ -1,10 +1,10 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5000/students';
+const API_URL = 'http://localhost:8080/students';
 
-export const getStudents = async () => {
+export const getStudents = async (searchName) => {
     try {
-        const response = await axios.get(API_URL);
+        const response = await axios.get(API_URL + "?name_like="+searchName);
         return response.data;
     } catch (error) {
         console.error('Error fetching students:', error);
