@@ -1,6 +1,17 @@
 import axios from 'axios';
+import {toast} from "react-toastify";
 
 const API_URL = 'http://localhost:3001/students';
+
+const handleError = (error) => {
+    if (!error.response) {
+        // Lỗi mạng
+        toast.error("Lỗi kết nối mạng. Vui lòng kiểm tra kết nối và thử lại.");
+    } else {
+        toast.error('Error: ' + error.message);
+    }
+    throw error;
+};
 
 export const getStudents = async (searchName = '', minPoints = 0, topPoints) => {
     try {
@@ -15,8 +26,7 @@ export const getStudents = async (searchName = '', minPoints = 0, topPoints) => 
         });
         return response.data;
     } catch (error) {
-        window.alert("error : " + error.message);
-        throw error;
+        handleError(error);
     }
 };
 
@@ -25,8 +35,7 @@ export const addStudent = async (values) => {
         const response = await axios.post(API_URL, values);
         return response.data;
     } catch (error) {
-        window.alert('error : ' + error.message);
-        throw error;
+        handleError(error);
     }
 };
 
@@ -35,8 +44,7 @@ export const saveStudent = async (id, values) => {
         const response = await axios.put(`${API_URL}/${id}`, values);
         return response.data;
     } catch (error) {
-        window.alert('error : ' + error.message);
-        throw error;
+        handleError(error);
     }
 };
 
@@ -44,7 +52,6 @@ export const deleteStudent = async (id) => {
     try {
         await axios.delete(`${API_URL}/${id}`);
     } catch (error) {
-        window.alert('error : ' + error.message);
-        throw error;
+        handleError(error);
     }
 };

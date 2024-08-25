@@ -21,9 +21,7 @@ function StudentList() {
             try {
                 const data = await StudentService.getStudents(searchName, minPoints, topPoints);
                 setStudents(data);
-            } catch (error) {
-                window.alert('Error : ' + error.message);
-            }
+            } catch (error) {}
         };
         getAllStudents(searchName, minPoints, topPoints);
     }, [searchName, minPoints, topPoints]);
@@ -36,9 +34,7 @@ function StudentList() {
             ));
             setEditingStudent(null); // Close the modal after saving
             toast.success(`Chỉnh sửa " + ${updatedStudent.name} + "thành công!!!`)
-        } catch (error) {
-            window.alert('Error: ' + error.message);
-        }
+        } catch (error) {}
     };
 
     const handleAddStudent = async (values) => {
@@ -48,9 +44,7 @@ function StudentList() {
             setStudents([...students, newStudent]);
             setShowAddModal(false); // Close the modal after adding
             toast.success("Thêm mới thành công!!!")
-        } catch (error) {
-            window.alert('Error : ' + error.message);
-        }
+        } catch (error) {}
     };
 
     const handleDeleteClick = async (studentId) => {
@@ -58,9 +52,7 @@ function StudentList() {
             await StudentService.deleteStudent(studentId);
             setStudents(students.filter(student => student.id !== studentId));
             toast.error("Xoá thành công!!!")
-        } catch (error) {
-            window.alert('Error : ' + error.message);
-        }
+        } catch (error) {}
     };
 
     const toggleFilters = () => setShowFilters(!showFilters); // Toggle filter visibility
