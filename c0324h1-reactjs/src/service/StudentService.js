@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8080/students';
+const API_URL = 'http://localhost:3001/students';
 
 export const getStudents = async (searchName = '', minPoints = 0, topPoints) => {
     try {
@@ -15,7 +15,7 @@ export const getStudents = async (searchName = '', minPoints = 0, topPoints) => 
         });
         return response.data;
     } catch (error) {
-        window.alert("There was an error fetching the students: " + error.message);
+        window.alert("error : " + error.message);
         throw error;
     }
 };
@@ -25,7 +25,7 @@ export const addStudent = async (values) => {
         const response = await axios.post(API_URL, values);
         return response.data;
     } catch (error) {
-        window.alert('There was an error adding the student: ' + error.message);
+        window.alert('error : ' + error.message);
         throw error;
     }
 };
@@ -35,7 +35,7 @@ export const saveStudent = async (id, values) => {
         const response = await axios.put(`${API_URL}/${id}`, values);
         return response.data;
     } catch (error) {
-        window.alert('There was an error updating the student: ' + error.message);
+        window.alert('error : ' + error.message);
         throw error;
     }
 };
@@ -44,7 +44,7 @@ export const deleteStudent = async (id) => {
     try {
         await axios.delete(`${API_URL}/${id}`);
     } catch (error) {
-        window.alert('There was an error deleting the student: ' + error.message);
+        window.alert('error : ' + error.message);
         throw error;
     }
 };

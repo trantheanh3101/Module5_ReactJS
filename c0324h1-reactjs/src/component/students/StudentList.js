@@ -4,6 +4,8 @@ import axios from 'axios';
 import AddStudent from './AddStudent';
 import EditStudent from './EditStudent';
 import * as StudentService from "../../service/StudentService";
+import {toast} from "react-toastify";
+import {Link} from "react-router-dom";
 
 function StudentList() {
     const [students, setStudents] = useState([]);
@@ -20,7 +22,7 @@ function StudentList() {
                 const data = await StudentService.getStudents(searchName, minPoints, topPoints);
                 setStudents(data);
             } catch (error) {
-                window.alert('Error fetching students: ' + error.message);
+                window.alert('Error : ' + error.message);
             }
         };
         getAllStudents(searchName, minPoints, topPoints);
@@ -33,8 +35,9 @@ function StudentList() {
                 student.id === editingStudent.id ? updatedStudent : student
             ));
             setEditingStudent(null); // Close the modal after saving
+            toast.success(`Chỉnh sửa " + ${updatedStudent.name} + "thành công!!!`)
         } catch (error) {
-            window.alert('Error updating student: ' + error.message);
+            window.alert('Error: ' + error.message);
         }
     };
 
@@ -44,8 +47,9 @@ function StudentList() {
             const newStudent = await StudentService.addStudent({ ...values, id: newId + "" });
             setStudents([...students, newStudent]);
             setShowAddModal(false); // Close the modal after adding
+            toast.success("Thêm mới thành công!!!")
         } catch (error) {
-            window.alert('Error adding student: ' + error.message);
+            window.alert('Error : ' + error.message);
         }
     };
 
@@ -53,8 +57,9 @@ function StudentList() {
         try {
             await StudentService.deleteStudent(studentId);
             setStudents(students.filter(student => student.id !== studentId));
+            toast.error("Xoá thành công!!!")
         } catch (error) {
-            window.alert('Error deleting student: ' + error.message);
+            window.alert('Error : ' + error.message);
         }
     };
 
@@ -62,10 +67,12 @@ function StudentList() {
 
     return (
         <div className="container mt-5">
-            <button className="btn btn-success mb-3" onClick={() => setShowAddModal(true)}>
+            {/*<button className="btn btn-success mx-2" onClick={() => window.location.href='/listTeacher'}>ListTeacher</button>*/}
+            <Link className="btn btn-primary" to="/listTeacher">ListTeacher</Link>
+            <button className="btn btn-success mx-2" onClick={() => setShowAddModal(true)}>
                 Add New Student
             </button>
-            <button className="btn btn-info mb-3" onClick={toggleFilters}>
+            <button className="btn btn-info mx-2" onClick={toggleFilters}>
                 {showFilters ? 'Hide Filters' : 'Show Filters'}
             </button>
             {showFilters && (
