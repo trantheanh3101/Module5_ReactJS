@@ -108,6 +108,11 @@ function BookList() {
                 </select>
             </div>
 
+            {books.length === 0 ? (
+                <div className="alert alert-info">
+                    Không có thông tin sách này
+                </div>
+            ) : (
             <table className="table table-striped table-bordered">
                 <thead className="thead-dark">
                 <tr>
@@ -139,6 +144,7 @@ function BookList() {
                 ))}
                 </tbody>
             </table>
+            )};
 
             {/* Modal for Adding New Book */}
             <AddBook
