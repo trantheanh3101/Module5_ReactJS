@@ -19,7 +19,7 @@ export const getStudents = async (searchName = '', minPoints = 0, maxPoints = 10
             params: {
                 name_like: searchName,
                 points_gte: minPoints,
-                points_lte: maxPoints, // Thêm điều kiện maxPoints
+                points_lte: maxPoints,
                 _sort: 'points',
                 _order: 'desc',
                 _limit: topPoints && Number(topPoints) > 0 ? Number(topPoints) : undefined

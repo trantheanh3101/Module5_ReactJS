@@ -18,14 +18,15 @@ function StudentList() {
     const [showFilters, setShowFilters] = useState(false); // State to manage showing filters
 
     useEffect(() => {
-        const getAllStudents = async (searchName, minPoints, maxPoints, topPoints) => {
-            try {
-                const data = await StudentService.getStudents(searchName, minPoints, maxPoints, topPoints);
-                setStudents(data);
-            } catch (error) {}
-        };
         getAllStudents(searchName, minPoints, maxPoints, topPoints);
     }, [searchName, minPoints, maxPoints, topPoints]);
+
+    const getAllStudents = async (searchName, minPoints, maxPoints, topPoints) => {
+        try {
+            const data = await StudentService.getStudents(searchName, minPoints, maxPoints, topPoints);
+            setStudents(data);
+        } catch (error) {}
+    };
 
     const handleSaveClick = async (values) => {
         try {
