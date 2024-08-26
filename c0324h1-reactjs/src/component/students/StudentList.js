@@ -149,8 +149,7 @@ function StudentList() {
                         <td>
                             <button className="btn btn-primary" onClick={() => setEditingStudent(item)}>Edit</button>
                             {' '}
-                            <button className="btn btn-danger" onClick={() => handleDeleteClick(item.id)}>Delete
-                            </button>
+                            <button className="btn btn-danger" onClick={() => handleDeleteClick(item.id)}>Delete</button>
                         </td>
                     </tr>
                 ))}

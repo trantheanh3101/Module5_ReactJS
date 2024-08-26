@@ -2,7 +2,6 @@ import React from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 
-// Validation schema for the form
 const validationSchema = Yup.object({
     name: Yup.string()
         .max(100, 'Book name must not exceed 100 characters')
@@ -17,25 +16,20 @@ const validationSchema = Yup.object({
         .required('Quantity is required'),
 });
 
-function AddBook({ show, onClose, onSave, genres }) {
-    if (!show) return null;
+function EditBook({ show, onClose, onSave, genres, book }) {
+    if (!show || !book) return null;
 
     return (
         <div className="modal fade show d-block" tabIndex="-1">
             <div className="modal-dialog">
                 <div className="modal-content">
                     <div className="modal-header">
-                        <h5 className="modal-title">Add New Book</h5>
+                        <h5 className="modal-title">Edit Book</h5>
                         <button type="button" className="btn-close" onClick={onClose}></button>
                     </div>
                     <div className="modal-body">
                         <Formik
-                            initialValues={{
-                                name: '',
-                                genreId: '',
-                                release_date: '',
-                                quantity: 1,
-                            }}
+                            initialValues={book}
                             validationSchema={validationSchema}
                             onSubmit={onSave}
                         >
@@ -66,7 +60,7 @@ function AddBook({ show, onClose, onSave, genres }) {
                                     </div>
 
                                     <div className="mb-3">
-                                        <label htmlFor="release_date" className="form-label">Entry Date:</label>
+                                        <label htmlFor="release_date" className="form-label">Release Date:</label>
                                         <Field
                                             type="date"
                                             id="release_date"
@@ -83,14 +77,13 @@ function AddBook({ show, onClose, onSave, genres }) {
                                             id="quantity"
                                             name="quantity"
                                             className="form-control"
-                                            min="1"
                                         />
                                         <ErrorMessage name="quantity" component="div" className="text-danger" />
                                     </div>
 
                                     <div className="modal-footer">
                                         <button type="button" className="btn btn-secondary" onClick={onClose}>Close</button>
-                                        <button type="submit" className="btn btn-primary">Save</button>
+                                        <button type="submit" className="btn btn-primary">Save Changes</button>
                                     </div>
                                 </Form>
                             )}
@@ -102,4 +95,4 @@ function AddBook({ show, onClose, onSave, genres }) {
     );
 }
 
-export default AddBook;
+export default EditBook;

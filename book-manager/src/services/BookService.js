@@ -8,7 +8,9 @@ export const getBooks = async (searchName = '',selectedGenre = '') => {
         const response = await axios.get(`${API_URL}/books`, {
             params: {
                 name_like: searchName,
-                genreId: selectedGenre
+                genreId: selectedGenre,
+                _sort: "quantity",
+                _order: 'asc'
             }
         });
         return response.data;
@@ -28,4 +30,24 @@ export const getGenres = async () => {
     }
 };
 
+export const addBook = async (book) => {
+    try {
+        const response = await axios.post(`${API_URL}/books`, book);
+        return response.data;
+    } catch (error) {
+        console.error("Error adding book:", error);
+        throw error;
+    }
+};
 
+export const deleteBook = async (bookId) => {
+    try {
+        await axios.delete(`${API_URL}/books/${bookId}`);
+    } catch (error) {
+    }
+}
+
+export const updateBook = async (book) => {
+    const response = await axios.put(`${API_URL}/books/${book.id}`, book);
+    return response.data;
+};
