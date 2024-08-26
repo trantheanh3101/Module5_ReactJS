@@ -10,6 +10,7 @@ import {Link} from "react-router-dom";
 function StudentList() {
     const [students, setStudents] = useState([]);
     const [minPoints, setMinPoints] = useState(0);
+    const [maxPoints, setMaxPoints] = useState(10);
     const [topPoints, setTopPoints] = useState("");
     const [editingStudent, setEditingStudent] = useState(null);
     const [showAddModal, setShowAddModal] = useState(false);
@@ -17,14 +18,14 @@ function StudentList() {
     const [showFilters, setShowFilters] = useState(false); // State to manage showing filters
 
     useEffect(() => {
-        const getAllStudents = async (searchName, minPoints, topPoints) => {
+        const getAllStudents = async (searchName, minPoints, maxPoints, topPoints) => {
             try {
-                const data = await StudentService.getStudents(searchName, minPoints, topPoints);
+                const data = await StudentService.getStudents(searchName, minPoints, maxPoints, topPoints);
                 setStudents(data);
             } catch (error) {}
         };
-        getAllStudents(searchName, minPoints, topPoints);
-    }, [searchName, minPoints, topPoints]);
+        getAllStudents(searchName, minPoints, maxPoints, topPoints);
+    }, [searchName, minPoints, maxPoints, topPoints]);
 
     const handleSaveClick = async (values) => {
         try {
@@ -51,7 +52,7 @@ function StudentList() {
         try {
             await StudentService.deleteStudent(studentId);
             setStudents(students.filter(student => student.id !== studentId));
-            toast.error("Xoá thành công!!!")
+            toast.success("Xoá thành công!!!")
         } catch (error) {}
     };
 
@@ -79,6 +80,19 @@ function StudentList() {
                             max="10"
                             placeholder="Enter points"
                             onChange={(e) => setMinPoints(Number(e.target.value))}
+                        />
+                    </div>
+
+                    <div className="mb-3">
+                        <label htmlFor="maxPoints" className="form-label">Filter by maximum points:</label>
+                        <input
+                            type="number"
+                            id="maxPoints"
+                            className="form-control"
+                            min="0"
+                            max="10"
+                            placeholder="Enter maximum points"
+                            onChange={(e) => setMaxPoints(Number(e.target.value))}
                         />
                     </div>
 
